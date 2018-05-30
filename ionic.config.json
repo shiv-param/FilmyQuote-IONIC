@@ -1,0 +1,8 @@
+{
+  "name": "filmy-quote-ionic",
+  "app_id": "d5f6d80a",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
