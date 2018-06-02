@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-// import { SignInOptionsPage } from "../sign-in-options/sign-in-options";
+import { SignInOptionsPage } from "../sign-in-options/sign-in-options";
 import { LoadingController } from 'ionic-angular';
 import { AppFiltersProvider } from "../../providers/app-filters/app-filters";
 import { UserProvider } from "../../providers/user/user";
@@ -91,20 +91,20 @@ export class FiltersPage {
     this.main_callback(this.user_provider.isUserLoggedIn());
   }
 
-  // public showSignInOptions(){
-  //   this.navCtrl.push(SignInOptionsPage, {
-  //     callback: this.signInCallback
-  //   });
-  // }
+  public showSignInOptions(){
+    this.navCtrl.push(SignInOptionsPage, {
+      callback: this.signInCallback
+    });
+  }
 
-  // public signInCallback = (logged_in) => {
-  //   return new Promise((resolve, reject) => {
-  //     if(logged_in){
-  //       this.presentLoading("Getting user filters...");
-  //       this.userDataLoad();
-  //     }
-  //     resolve();
-  //    });
-  // };
+  public signInCallback = (logged_in) => {
+    return new Promise((resolve, reject) => {
+      if(logged_in){
+        this.presentLoading("Getting user filters...");
+        this.userDataLoad();
+      }
+      resolve();
+     });
+  };
 
 }
