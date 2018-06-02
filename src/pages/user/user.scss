@@ -1,0 +1,32 @@
+page-user {
+  .main-content{
+    font-family: "Segoe UI", "Noto Sans", sans-serif;
+    background-color: #192f42;
+    .person-icon{
+      font-size: 100px;
+      color:#33d9b2;
+    }
+    .profile_pic{
+      min-width: 100px;
+      min-height: 100px;
+      border: solid #d1ccc0 2px;
+      border-radius: 10px;
+    }
+    .section-header{
+      margin-top: 10px;
+      color:#33d9b2;
+    }
+    .section-description{
+      color: #d1ccc0;
+      font-weight: 300;
+      .focus{
+        font-weight: 500;
+      }
+    }
+  }
+  .vertical-align-content > * {
+     display: flex!important;
+     align-content: center!important;
+     align-items: center!important;
+  }
+}

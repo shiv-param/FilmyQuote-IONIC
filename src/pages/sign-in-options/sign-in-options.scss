@@ -1,0 +1,18 @@
+page-sign-in-options {
+  .main-content{
+    font-family: "Segoe UI", "Noto Sans", sans-serif;
+    background-color: #192f42;
+    .person-icon{
+      font-size: 100px;
+      color:#33d9b2;
+    }
+    .section-header{
+      color:#f7f1e3;
+    }
+  }
+  .vertical-align-content > * {
+     display: flex!important;
+     align-content: center!important;
+     align-items: center!important;
+  }
+}

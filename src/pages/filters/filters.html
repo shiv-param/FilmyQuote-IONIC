@@ -1,0 +1,95 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title></ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding [class]="!user_provider.isUserLoggedIn() ? 'main-content vertical-align-content': 'main-content'">
+
+  <ion-grid>
+
+    <ion-row *ngIf="user_provider.isUserLoggedIn()">
+
+      <ion-col col-12>
+        <h3 class="section-header">Pick some tags you're interested in</h3>
+        <p class="section-description">We will use them to customize the dialogues based on your interest</p>
+      </ion-col>
+
+      <ion-col col-12 text-center>
+        <button
+          ion-button
+          round
+          small
+          *ngFor="let tag of tags_list | slice: 0:tag_show_limit"
+          [color]="user_provider.checkTagPresent(tag.id) ? 'secondary' : 'light'"
+          [outline]="!user_provider.checkTagPresent(tag.id)"
+          (click)="updateTag(tag.id)">
+          {{ capitalize(tag.name) }}
+        </button>
+      </ion-col>
+
+      <ion-col col-12 text-center *ngIf="tag_show_limit != tags_list.length">
+        <button ion-button icon-left color="secondary" clear (click)="showMoreTags()">
+          <ion-icon name="add"></ion-icon>
+          SHOW MORE
+        </button>
+      </ion-col>
+
+      <ion-col col-12 text-center *ngIf="tag_show_limit == tags_list.length">
+        <button ion-button icon-left color="secondary" clear (click)="showLessTags()">
+          <ion-icon name="remove"></ion-icon>
+          SHOW LESS
+        </button>
+      </ion-col>
+
+      <ion-col col-12>
+        <hr class="horizontal-partition">
+      </ion-col>
+
+      <ion-col col-12>
+        <h4 class="section-header">
+          Set year range (<span class="year_filter">{{ filter_years.lower }}</span> - <span class="year_filter">{{ filter_years.upper }}</span>)
+        </h4>
+      </ion-col>
+
+      <ion-col col-12>
+        <ion-item>
+          <ion-range
+            color="secondary"
+            class="year_range_filter"
+            dualKnobs="true"
+            (ionChange)="update_year_range()"
+            [(ngModel)]="filter_years"
+            [min]="min_year"
+            [max]="max_year"
+            step="1">
+          </ion-range>
+        </ion-item>
+      </ion-col>
+
+    </ion-row>
+
+    <ion-row center *ngIf="!user_provider.isUserLoggedIn()" >
+
+      <ion-col col-12 text-center>
+        <h1 class="filter-icon">
+          <ion-icon name="funnel"></ion-icon>
+        </h1>
+      </ion-col>
+
+      <ion-col col-12 text-center>
+        <h3 class="section-description">You must sign in to filter</h3>
+      </ion-col>
+
+      <ion-col col-12 text-center>
+        <button ion-button icon-right (click)="showSignInOptions()" color="secondary">
+          Sign In
+          <ion-icon name="log-in"></ion-icon>
+        </button>
+      </ion-col>
+
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

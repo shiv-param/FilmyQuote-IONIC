@@ -1,0 +1,32 @@
+<ion-row>
+  <ion-col col-12 text-center>
+    <ion-row>
+      <ion-col col-3></ion-col>
+      <ion-col col-6 class="poster_url">
+        <img [src]="posterUrl(dialogue.star_image_url)">
+      </ion-col>
+      <ion-col col-3></ion-col>
+      <ion-col col-12></ion-col>
+      <ion-col col-1></ion-col>
+      <ion-col col-10 [class]="dialogueTextClass(dialogue.dialogue)">
+        {{ capitalize(dialogue.dialogue) }}
+      </ion-col>
+      <ion-col col-1></ion-col>
+      <ion-col col-12></ion-col>
+      <ion-col col-1></ion-col>
+      <ion-col col-10 class="description_text">
+        - {{ capitalize(dialogue.star) }},<br>
+        {{ capitalize(dialogue.movie_name)}} ({{ dialogue.movie_year }})
+      </ion-col>
+      <ion-col col-1></ion-col>
+      <ion-col col-12></ion-col>
+      <ion-col col-12></ion-col>
+      <ion-col col-12 class="tags">
+        <sup>
+          <ion-icon name="pricetags"></ion-icon>
+        </sup>
+        {{ tagString(dialogue.tags) }}
+      </ion-col>
+    </ion-row>
+  </ion-col>
+</ion-row>

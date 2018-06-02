@@ -1,0 +1,21 @@
+<ion-header>
+    <ion-navbar color="primary">
+      <ion-title>{{ movie_text }}</ion-title>
+    </ion-navbar>
+  </ion-header>
+<ion-content padding class="main-content">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content color="secondary"
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to fetch new dialogue"
+      refreshingSpinner="circles"
+      refreshingText="Fetching new dialogue">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-grid *ngIf="!dialogue_loaded">
+    <loader></loader>
+  </ion-grid>
+  <ion-grid *ngIf="dialogue_loaded">
+    <dialogue-container [dialogue]="dialogue"></dialogue-container>
+  </ion-grid>
+</ion-content>

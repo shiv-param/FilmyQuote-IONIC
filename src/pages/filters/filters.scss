@@ -1,0 +1,42 @@
+page-filters {
+  .main-content{
+    font-family: "Segoe UI", "Noto Sans", sans-serif;
+    background-color: #192f42;
+    .filter-icon{
+      font-size: 100px;
+      color:#33d9b2;
+    }
+    .section-header{
+      color:#f7f1e3;
+    }
+    .horizontal-partition{
+      background-color: #33d9b2;
+    }
+    .section-description{
+      color: #d1ccc0;
+      font-weight: 300;
+    }
+    .page-logo{
+      color: #FFFFFF;
+      font-size: 100px;
+    }
+    .year_filter{
+      color:#33d9b2;
+    }
+    .tag_selected{
+      color: #33d9b2;
+    }
+    ion-item{
+      background: transparent !important;
+      border-bottom-color: transparent !important;
+    }
+    ion-range::after {
+      border-bottom-color: transparent !important;
+    }
+  }
+  .vertical-align-content > * {
+     display: flex!important;
+     align-content: center!important;
+     align-items: center!important;
+  }
+}

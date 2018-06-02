@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-searchbar
+      [(ngModel)]="search_input"
+      (ionInput)="onInput($event)"
+      [animated]="true"
+      placeholder="Search movies...">
+    </ion-searchbar>
+  </ion-navbar>
+</ion-header>
+<ion-content padding class="main-content">
+
+  <ion-grid>
+    <ion-row>
+      <ion-col col-12>
+        <ion-list>
+          <button ion-item *ngFor="let result of search_results" (click)="openSearchResult(result.name, result.year, result.text)">
+            {{ result.text }}
+          </button>
+        </ion-list>
+      </ion-col>
+      <ion-col col-12 text-center *ngIf="search_results.length == 0 && search_input.trim() != ''">
+        <div class="search-heading">No Results found</div>
+      </ion-col>
+      <ion-col col-12 text-center *ngIf="search_results.length == 0 && search_input.trim() == ''">
+        <div class="search-icon">
+          <ion-icon name="search"></ion-icon>
+        </div>
+        <div class="search-heading">Search movies</div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
