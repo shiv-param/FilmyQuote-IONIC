@@ -45,12 +45,12 @@ export class SignInOptionsPage {
     let loader = this.presentLoading();
     this.auth_provider.login(sign_in_with).then((user_data:any)=>{
       if(user_data !== null){
-        this.auth_provider.createAndSaveUser(user_data, sign_in_with).then(()=>{
+        this.auth_provider.createAndSaveUser(user_data, sign_in_with).then((user_details)=>{
           this.mainCallback(true).then(()=>{
+            this.user_provider.loginUser(user_details);
             loader.dismiss();
             this.navCtrl.pop();
           });
-          loader.dismiss();
         }).catch((err)=>{
           console.log(err);
           loader.dismiss();

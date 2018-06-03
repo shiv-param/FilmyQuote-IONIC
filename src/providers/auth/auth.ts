@@ -7,8 +7,10 @@ import { AngularFireDatabase } from 'angularfire2/database';
 @Injectable()
 export class AuthProvider {
 
-  constructor(private fire: AngularFireAuth, private afs: AngularFireDatabase) {
-  }
+  constructor(
+    private fire: AngularFireAuth,
+    private afs: AngularFireDatabase
+  ) {}
 
   public login(type:string) {
 
@@ -66,7 +68,8 @@ export class AuthProvider {
             tags: [],
             years: [],
             bookmarks: [],
-            reactions: []
+            reactions: [],
+            theme: ''
           };
           if("tags" in data){
             user_details.tags = data.tags;
@@ -80,6 +83,11 @@ export class AuthProvider {
           if("reactions" in data){
             user_details.reactions = data.reactions;
           }
+          if("theme" in data){
+            user_details.theme = data.theme;
+          }else{
+            user_details.theme = "primary";
+          }
           resolve(user_details);
         }else{
           let user_details:any = {
@@ -90,10 +98,10 @@ export class AuthProvider {
             tags: [],
             years: [],
             bookmarks: [],
-            reactions: []
+            reactions: [],
+            theme: "primary"
           };
-          resolve(user_details);
-          this.afs.object('/users/'+user.uid).update(user_obj).then(() => {
+          this.afs.object('/users/'+user.uid).update(user_details).then(() => {
             resolve(user_details);
           });
         }

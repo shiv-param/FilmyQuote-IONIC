@@ -1,40 +1,30 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-// import { AngularFireDatabase } from "angularfire2/database";
+import { AngularFireDatabase } from "angularfire2/database";
 
 @Injectable()
 export class UserProvider {
 
   private user_logged_in:boolean = false;
-  // public user_id:string = '';
-  // public user_name:string = '';
-  // public display_pic:string = '';
-  // public sign_in_with:string = '';
-  // public tags:any = [];
-  // public years:any = [];
-  // public bookmarks:any = [];
-  // public reactions:any = [];
-  private user:any = {
-    id: '',
-    name: 'Shiv Saxena',
-    display_pic: '../../assets/imgs/placeholder.svg',
-    sign_in_with: 'facebook'
-  };
+  private user:any = {};
+  private app_theme = 'primary';
 
-  constructor(public http: HttpClient, public storage: Storage) {
-
-  }
+  constructor(
+    public http: HttpClient,
+    public storage: Storage,
+    public afs: AngularFireDatabase
+  ) {}
 
   // User Login and details
   public isUserLoggedIn(){
-    // return this.user_logged_in;
-    return false;
+    return this.user_logged_in;
   }
 
   public logOutUser(){
     this.user_logged_in = false;
     this.user = {};
+    this.app_theme = 'primary';
     this.storage.set('user', {});
     this.storage.set('user_logged_in', false);
   }
@@ -45,6 +35,7 @@ export class UserProvider {
       this.storage.get('user').then((user) => {
         this.user_logged_in = true;
         this.user = user;
+        this.app_theme = user.theme;
         resolve();
       }).catch((err) => {
         this.logOutUser();
@@ -89,6 +80,11 @@ export class UserProvider {
     this.storage.set('user', user);
   }
 
+  public loginUser(user:any){
+    this.updateUserData(user);
+    this.storage.set('user_logged_in', true);
+  }
+
   public getUserBasicDetails(){
     return {
       name: this.user.name,
@@ -96,6 +92,10 @@ export class UserProvider {
       display_pic: this.user.display_pic,
       sign_in_with: this.user.sign_in_with
     }
+  }
+
+  public getTheme(){
+    return this.app_theme;
   }
 
 
@@ -108,14 +108,13 @@ export class UserProvider {
     return false;
   }
 
-  //public updateReactions(){
-    // this.updateUserData(this.user);
-    //this.afs.object('/users/'+this.user.id).update({
-      //reactions: this.user.reactions
-    //}).then((data) => {
-      //this.updateUserData(this.user);
-    //});
-  //}
+  public updateReactions(){
+    this.afs.object('/users/'+this.user.id).update({
+      reactions: this.user.reactions
+    }).then((data) => {
+      this.updateUserData(this.user);
+    });
+  }
 
   public addReaction(dialogue_id:string, mood:string){
     if(!this.reactionAddedForDialogue(dialogue_id)){
@@ -123,11 +122,11 @@ export class UserProvider {
         dialogue_id: dialogue_id,
         mood: mood
       });
-      //this.updateReactions();
+      this.updateReactions();
     }
   }
 
-  public removeReaction(dialogue_id:string, reaction:string){
+  public removeReaction(dialogue_id:string){
     if(this.reactionAddedForDialogue(dialogue_id)){
       let index = -1;
       for(let i=0; i<this.user.reactions; i++) {
@@ -137,7 +136,7 @@ export class UserProvider {
         }
       }
       this.user.reactions.slice(index, 1);
-      //this.updateReactions();
+      this.updateReactions();
     }
   }
 
@@ -148,50 +147,60 @@ export class UserProvider {
     return [];
   }
 
-  public checkBookmarkPresent(dialogue_id:string){
+  public checkBookmarkPresent(dialogue_id:number){
     return this.user.bookmarks.indexOf(dialogue_id) > -1;
   }
 
-  //public updateBookmarks(){
-    // this.updateUserData(this.user);
-    //this.afs.object('/users/'+this.user.id).update({
-      //bookmarks: this.user.bookmarks
-    //}).then((data) => {
-      //this.updateUserData(this.user);
-    //});
-  //}
+  public updateBookmarks(){
+    return new Promise((resolve, reject) => {
+      this.afs.object('/users/'+this.user.id).update({
+        bookmarks: this.user.bookmarks
+      }).then((data) => {
+        this.updateUserData(this.user);
+        resolve();
+      }).catch((err) => {
+        resolve();
+      });
+    });
+  }
 
-  public addBookmark(dialogue_id:string){
+  public addBookmark(dialogue_id:number){
     if(this.user.bookmarks.indexOf(dialogue_id) == -1){
       this.user.bookmarks.push(dialogue_id);
-      //this.updateBookmarks();
+      this.updateBookmarks();
     }
   }
 
-  public removeBookmark(dialogue_id:string){
-    let index = this.user.bookmarks.indexOf(dialogue_id);
-    if(index > -1){
-      this.user.bookmarks.splice(index, 1);
-      //this.updateBookmarks();
-    }
+  public removeBookmark(dialogue_id:number){
+    return new Promise((resolve, reject) => {
+      let index = this.user.bookmarks.indexOf(dialogue_id);
+      if(index > -1){
+        this.user.bookmarks.splice(index, 1);
+        this.updateBookmarks().then(() => {
+          resolve();
+        });
+      }else{
+        resolve();
+      }
+    });
   }
 
 
   // Years
   public getUserYears(){
-    if(this.user_logged_in)
+    if(this.user_logged_in){
       return this.user.years;
+    }
     return [];
   }
 
   public updateYear(years:any){
-    // this.updateUserData(this.user);
-    // this.afs.object('/users/'+this.user.id).update({
-    //   years: years
-    // }).then((data) => {
-    //   this.user.years = years;
-    //   this.updateUserData(this.user);
-    // });
+    this.afs.object('/users/'+this.user.id).update({
+      years: years
+    }).then((data) => {
+      this.user.years = years;
+      this.updateUserData(this.user);
+    });
   }
 
 
@@ -206,19 +215,18 @@ export class UserProvider {
     return this.user.tags;
   }
 
-  //public updateTags(){
-    // this.updateUserData(this.user);
-    //this.afs.object('/users/'+this.user.id).update({
-      //tags: this.user.tags
-    //}).then((data) => {
-      //this.updateUserData(this.user);
-    //});
-  //}
+  public updateTags(){
+    this.afs.object('/users/'+this.user.id).update({
+      tags: this.user.tags
+    }).then((data) => {
+      this.updateUserData(this.user);
+    });
+  }
 
   public addTag(tag_id:string){
     if(this.user.tags.indexOf(tag_id) == -1){
       this.user.tags.push(tag_id);
-      //this.updateTags();
+      this.updateTags();
     }
   }
 
@@ -226,7 +234,7 @@ export class UserProvider {
     let index = this.user.tags.indexOf(tag_id);
     if(index > -1){
       this.user.tags.splice(index, 1);
-      //this.updateTags();
+      this.updateTags();
     }
   }
 
