@@ -1,7 +1,101 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="secondary">
     <ion-title>Bookmarks</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content padding>
+<ion-content padding class="main-content vertical-align-content">
+  <ion-grid>
+
+    <ion-row *ngIf="user_provider.isUserLoggedIn()">
+
+      <ion-col col-12 *ngIf="final_bookmarks.length === 0" text-center>
+        <h1 class="bookmark-icon">
+          <ion-icon name="bookmarks"></ion-icon>
+        </h1>
+        <h3 class="section-description">No bookmarks found</h3>
+      </ion-col>
+      <ion-col col-12 *ngIf="final_bookmarks.length !== 0">
+
+        <ion-slides (ionSlideDidChange)="slideChanged()">
+
+          <ion-slide *ngFor="let bookmark of final_bookmarks">
+            <div padding *ngIf="bookmark.dialogue_loaded">
+              <ion-card class="bookmark-content">
+                <ion-item>
+                  <ion-avatar item-start>
+                    <img [src]="posterUrl(bookmark.dialogue.star_image_url)">
+                  </ion-avatar>
+                  <h2>{{ capitalize(bookmark.dialogue.star) }}</h2>
+                  <p>{{ capitalize(bookmark.dialogue.movie_name)}} ({{ bookmark.dialogue.movie_year }})</p>
+                </ion-item>
+
+                <ion-card-content text-justify>
+                  <p [class]="dialogueTextClass(bookmark.dialogue.dialogue)">{{ capitalize(bookmark.dialogue.dialogue) }}</p>
+                </ion-card-content>
+
+                <ion-row>
+                  <ion-col text-left>
+                    <button
+                      ion-button
+                      icon-left
+                      [color]="checkReactionPresent(bookmark.id) ? '':'primary'"
+                      [outline]="checkReactionPresent(bookmark.id)"
+                      small
+                      (click)="updateReaction(bookmark.id)">
+                      <img [src]="emoji.src" [class]="emoji.class" *ngFor="let emoji of emojiImage(bookmark.dialogue.emotions)">
+                      <div>{{ emojiCount(bookmark.dialogue.emotions) }}</div>
+                    </button>
+                  </ion-col>
+                  <ion-col text-right>
+                    <button ion-button icon-left clear small color="danger" (click)="removeBookmark(bookmark.id)">
+                      <ion-icon name="close-circle"></ion-icon>
+                      <div>Remove</div>
+                    </button>
+                  </ion-col>
+                  <ion-col col-12 center text-center>
+                    <ion-note class="tags">
+                      <ion-icon name="pricetags"></ion-icon>
+                      {{ tagString(bookmark.dialogue.tags) }}
+                    </ion-note>
+                  </ion-col>
+                </ion-row>
+
+              </ion-card>
+            </div>
+            <div padding *ngIf="!bookmark.dialogue_loaded" class="card-background-page">
+              <ion-card>
+                <img src="../../assets/imgs/placeholder.svg"/>
+                <div class="card-title">Loading Dialogue...</div>
+              </ion-card>
+            </div>
+          </ion-slide>
+
+        </ion-slides>
+
+      </ion-col>
+
+    </ion-row>
+
+    <ion-row center *ngIf="!user_provider.isUserLoggedIn()" >
+
+      <ion-col col-12 text-center>
+        <h1 class="bookmark-icon">
+          <ion-icon name="bookmarks"></ion-icon>
+        </h1>
+      </ion-col>
+
+      <ion-col col-12 text-center>
+        <h3 class="section-description">You must sign in to see your bookmarks</h3>
+      </ion-col>
+
+      <ion-col col-12 text-center>
+        <button ion-button icon-right (click)="showSignInOptions()" color="secondary">
+          Sign In
+          <ion-icon name="log-in"></ion-icon>
+        </button>
+      </ion-col>
+
+    </ion-row>
+
+  </ion-grid>
 </ion-content>
