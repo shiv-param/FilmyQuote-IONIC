@@ -72,19 +72,39 @@ export class FiltersPage {
     this.tags_list = this.app_filter_provider.getFilters().tags;
     this.min_year = this.app_filter_provider.getFilters().years[0];
     this.max_year = this.app_filter_provider.getFilters().years[1];
-    this.filter_years = {
-      lower: this.app_filter_provider.getFilters().years[0],
-      upper: this.app_filter_provider.getFilters().years[1]
-    };
+    if(this.user_provider.isUserLoggedIn()){
+      let filter_years = this.user_provider.getUserYears();
+      if(filter_years.length != 0){
+        this.filter_years = {
+          lower: filter_years[0],
+          upper: filter_years[1]
+        };
+      }else{
+        this.filter_years = {
+          lower: this.min_year,
+          upper: this.max_year
+        };
+      }
+    }else{
+      this.filter_years = {
+        lower: this.min_year,
+        upper: this.max_year
+      };
+    }
   }
 
-  ionViewDidLoad() {
-    this.main_callback = this.navParams.get("callback")
+  public userDataLoad(){
     this.user_provider.loadUser().then(()=>{
       this.app_filter_provider.loadAppFilters().then(()=>{
         this.getAllFilters();
+        this.dismissLoader();
       });
     });
+  }
+
+  ionViewDidLoad() {
+    this.main_callback = this.navParams.get("callback");
+    this.userDataLoad();
   }
 
   ionViewWillLeave() {
